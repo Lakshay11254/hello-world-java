@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                sh 'docker build -t hello-world-java .'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'docker run hello-world-java-test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'echo "Deploying to production..."'
+                // Add actual deployment steps here
+            }
+        }
+    }
+    
+    post {
+        always {
+            emailext body: 'Job status: ${currentBuild.currentResult}',
+                     subject: 'Jenkins Job Notification: ${JOB_NAME}',
+                     to: 'your-email@example.com'
+        }
+    }
+}
